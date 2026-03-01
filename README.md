@@ -1,1 +1,1 @@
-# cps449coil8.github.io
+# COIL-Team-8.github.io
