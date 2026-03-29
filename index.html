@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COIL Team 8 - CPS449</title>
-  </head>
-  <body>
-    <h1>Coil team 8 - Public website</h1>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COIL Team 8 - CPS449</title>
+  <link href="style.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="title">
+    <h1>COIL Team 8</h1>
+    <h2>Music Mood Classifier</h2>
+
     <h3>Group Members:</h3>
     <ul>
       <li>Ben Holdcraft</li>
@@ -14,8 +20,55 @@
       <li>Thomas McGinley</li>
       <li>Ngô Quang Hải</li>
     </ul>
-  </body>
+  </div>
+  <br />
+  <br />
+  <div class="section main">
+    <div class="card inputForm">
+      <h2>Title</h2>
+      <hr />
+      <form>
+        <label for="songTitle">Song Title:</label>
+        <input type="text" id="songTitle"><br><br>
+
+        <label for="artist">Artist:</label>
+        <input type="text" id="artist"><br><br>
+
+        <label for="lyrics">Lyrics:</label>
+        <textarea id="lyrics" rows="6"></textarea><br><br>
+
+        <input class="button" type="submit" value="Classify Mood">
+      </form>
+    </div>
+    <div class="card response">
+      <h2>Response Section</h2>
+      <hr />
+      <p class="responseContent">
+      </p>
+    </div>
+  </div>
+  <br />
+  <div class="section description">
+    <div class="wideblock projectDescription">
+      <h2>Project Description</h2>
+      <hr />
+      <p>
+        The Music Mood Classifier is a cloud-based intelligent system that analyzes music input and returns a mood
+        profile for that song. Users can enter song lyrics, a song title, or both, and the system will classify the mood
+        and suggest activities the song is suited for. The system consists of a backend REST API and a simple frontend
+        interface where users interact with the service.
+      </p>
+      <p>
+        Music is closely tied to how people feel and what they are doing day to day, but most tools for discovering
+        music focus on genre rather than mood. This project aims to build a simple and fun tool that classifies a song's
+        emotional mood and suggests activities it pairs well with, like studying, working out, or relaxing. The scope
+        includes building the backend microservice, connecting it to a frontend, and deploying the full system to the
+        cloud.
+      </p>
+    </div>
+  </div>
+  <br />
+  <br />
+</body>
+
 </html>
-
-
-
