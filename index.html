@@ -30,7 +30,7 @@
         Fill out one or more of the following fields, and we will determine the mood profile from it!
       </p>
       <hr />
-      <form>
+      <form id="moodForm">
         <label for="songTitle">Song Title:</label>
         <input type="text" id="songTitle"><br><br>
 
@@ -46,8 +46,65 @@
     <div class="card response">
       <h2>Response Section</h2>
       <hr />
-      <p class="responseContent">
-      </p>
+      <p class="responseContent"></p>
+      <script>
+        document.getElementById('moodForm').addEventListener('submit', async function(event) {
+
+          event.preventDefault(); // stop page refresh
+
+          const title = document.getElementById("songTitle").value.trim();
+          const artist = document.getElementById("artist").value.trim();
+          const lyrics = document.getElementById("lyrics").value.trim();
+          const responseBox = document.querySelector(".responseContent");
+
+          responseBox.innerHTML = "Loading...";
+
+          try {
+            const res = await fetch("https://coil-team-8-microservice-bsfbd7b2bndbcvfg.westus3-01.azurewebsites.net/classify", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ title, artist, lyrics })
+            });
+
+            const data = await res.json();
+
+            // Handle errors or warnings
+            if (data.error) {
+              responseBox.innerHTML = `<b>Error:</b> ${data.error}`;
+              return;
+            }
+
+            if (data.warning) {
+              responseBox.innerHTML = `<b>Warning:</b> ${data.warning}`;
+              return;
+            }
+
+            // Build output
+            let output = "";
+
+            if (data.songTitle) {
+              output += `<h3>${data.songTitle}</h3>`;
+            }
+
+            output += "<b>Top Moods:</b><br>";
+            data.moods.forEach(m => {
+              output += `• ${m.mood} (${m.confidence}%)<br>`;
+            });
+
+            if (data.lyrics) {
+              output += `<br><b>Lyrics Preview:</b><br><pre>${data.lyrics}</pre>`;
+            }
+
+            responseBox.innerHTML = output;
+
+          } catch (err) {
+            console.error(err);
+            responseBox.innerHTML = "Failed to connect to the server.";
+          }
+        });  
+      </script>
     </div>
   </div>
   <br />
