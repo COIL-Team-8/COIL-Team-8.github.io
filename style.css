@@ -154,6 +154,12 @@ hr {
 .card form {
     color: var(--lightest);
     padding: 0 15px 15px;
+    font-size: 16px;
+}
+
+.responseContent {
+    font-size: 16px;
+    line-height: 1.6;
 }
 
 .card {
