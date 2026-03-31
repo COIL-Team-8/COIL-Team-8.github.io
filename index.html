@@ -94,6 +94,13 @@
               output += `• ${m.mood} (${m.confidence}%)<br>`;
             });
 
+            if (data.activities && data.activities.length) {
+              output += `<br><b>Suggested Activities:</b><br>`;
+              data.activities.forEach(a => {
+                output += `• ${a}<br>`;
+              });
+            }
+
             if (data.lyrics) {
               output += `<br><b>Lyrics Preview:</b><br><pre>${data.lyrics}</pre>`;
             }
