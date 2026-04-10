@@ -179,16 +179,14 @@ hr {
 
 #lyrics,
 #songTitle,
-#artist,
-#youtubeUrl {
+#artist {
     width: 80%
 }
 
 .button,
 #songTitle,
 #lyrics,
-#artist,
-#youtubeUrl {
+#artist {
     background-color: var(--glass);
     backdrop-filter: blur(var(--bluramount));
     border: var(--borderthickness) solid var(--lightest);
@@ -200,8 +198,7 @@ hr {
 .button:hover,
 #songTitle:hover,
 #lyrics:hover,
-#artist:hover,
-#youtubeUrl:hover {
+#artist:hover {
     border-color: var(--accentgreen);
     box-shadow: 0 0 5px 0px var(--accentgreen);
 
