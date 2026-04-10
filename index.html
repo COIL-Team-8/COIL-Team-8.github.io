@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COIL Team 8 - CPS449</title>
   <link href="style.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -49,6 +50,19 @@
       <hr />
       <p class="responseContent"></p>
       <script>
+        function getMoodColor(mood) {
+          const colors = {
+            joy: '#FFD700', excitement: '#FF8C00', amusement: '#FFA500', love: '#FF69B4',
+            caring: '#FF9AA2', admiration: '#DDA0DD', gratitude: '#98FB98', optimism: '#FFEB3B',
+            pride: '#FFD700', relief: '#87CEEB', sadness: '#4A90D9', grief: '#4169E1',
+            remorse: '#6A5ACD', disappointment: '#708090', anger: '#FF4444', annoyance: '#FF6347',
+            disgust: '#8B4513', disapproval: '#CD5C5C', fear: '#9B59B6', nervousness: '#BA68C8',
+            embarrassment: '#E8A0BF', surprise: '#00CED1', curiosity: '#20B2AA', confusion: '#B0C4DE',
+            realization: '#48D1CC', desire: '#FF1493', approval: '#32CD32', neutral: '#888888',
+          };
+          return colors[mood] || '#05DF72';
+        }
+
         document.getElementById('moodForm').addEventListener('submit', async function(event) {
 
           event.preventDefault(); // stop page refresh
@@ -89,10 +103,30 @@
               output += `<h3>${data.songTitle}</h3>`;
             }
 
+            // Radar chart canvas
+            output += `<canvas id="moodChart" width="300" height="300" style="max-width:350px;margin:0 auto;display:block;"></canvas><br>`;
+
             output += "<b>Top Moods:</b><br>";
             data.moods.forEach(m => {
               output += `• ${m.mood} (${m.confidence}%)<br>`;
             });
+
+            // Emotional arc
+            if (data.arc && data.arc.length) {
+              output += `<br><b>Emotional Arc:</b><br>`;
+              output += `<div class="arc-container">`;
+              data.arc.forEach((a, i) => {
+                output += `<div class="arc-point">`;
+                output += `<div class="arc-dot" style="background:${getMoodColor(a.mood)}"></div>`;
+                output += `<div class="arc-label">${a.mood}</div>`;
+                output += `<div class="arc-section">Section ${a.section}</div>`;
+                output += `</div>`;
+                if (i < data.arc.length - 1) {
+                  output += `<div class="arc-line"></div>`;
+                }
+              });
+              output += `</div>`;
+            }
 
             if (data.activities && data.activities.length) {
               output += `<br><b>Suggested Activities:</b><br>`;
@@ -101,11 +135,52 @@
               });
             }
 
+            // Similar songs
+            if (data.similar && data.similar.length) {
+              output += `<br><b>Similar Songs:</b><br>`;
+              data.similar.forEach(s => {
+                output += `• ${s.name} — ${s.artist}<br>`;
+              });
+            }
+
             if (data.lyrics) {
               output += `<br><b>Lyrics Preview:</b><br><pre>${data.lyrics}</pre>`;
             }
 
             responseBox.innerHTML = output;
+
+            // Render radar chart
+            const ctx = document.getElementById('moodChart').getContext('2d');
+            new Chart(ctx, {
+              type: 'radar',
+              data: {
+                labels: data.moods.map(m => m.mood),
+                datasets: [{
+                  label: 'Mood Profile',
+                  data: data.moods.map(m => m.confidence),
+                  backgroundColor: 'rgba(5, 223, 114, 0.2)',
+                  borderColor: '#05DF72',
+                  borderWidth: 2,
+                  pointBackgroundColor: '#05DF72',
+                  pointBorderColor: '#05DF72',
+                }]
+              },
+              options: {
+                scales: {
+                  r: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: { color: 'rgba(175,175,175,0.2)' },
+                    angleLines: { color: 'rgba(175,175,175,0.2)' },
+                    pointLabels: { color: 'rgb(175,175,175)', font: { size: 12 } },
+                    ticks: { display: false },
+                  }
+                },
+                plugins: {
+                  legend: { display: false },
+                },
+              }
+            });
 
           } catch (err) {
             console.error(err);

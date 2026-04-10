@@ -216,3 +216,43 @@ label {
     display: block;
     margin-bottom: 10px;
 }
+
+.arc-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 15px 0;
+}
+
+.arc-point {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.arc-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.arc-label {
+    font-size: 13px;
+    color: var(--lightest);
+    font-weight: bold;
+}
+
+.arc-section {
+    font-size: 11px;
+    color: var(--light);
+}
+
+.arc-line {
+    width: 40px;
+    height: 2px;
+    background: var(--light);
+    margin-bottom: 30px;
+}
