@@ -63,6 +63,18 @@
           return colors[mood] || '#05DF72';
         }
 
+        // Maps moods to a 1-10 valence scale (10=very positive, 1=very negative)
+        function getMoodValence(mood) {
+          const valence = {
+            joy: 9, excitement: 8, amusement: 8, love: 9, caring: 7, admiration: 7,
+            gratitude: 8, optimism: 8, pride: 8, relief: 6, approval: 7, desire: 6,
+            surprise: 6, curiosity: 7, realization: 5, neutral: 5, confusion: 4,
+            nervousness: 3, embarrassment: 3, disappointment: 3, annoyance: 3,
+            sadness: 2, remorse: 2, anger: 2, disapproval: 2, fear: 2, grief: 1, disgust: 1,
+          };
+          return valence[mood] ?? 5;
+        }
+
         document.getElementById('moodForm').addEventListener('submit', async function(event) {
 
           event.preventDefault(); // stop page refresh
@@ -114,19 +126,7 @@
             // Emotional arc
             if (data.arc && data.arc.length) {
               output += `<br><b>Emotional Arc:</b><br>`;
-              output += `<div class="arc-container">`;
-              data.arc.forEach((a, i) => {
-                const color = getMoodColor(a.mood);
-                output += `<div class="arc-point">`;
-                output += `<div class="arc-label">${a.mood}</div>`;
-                output += `<div class="arc-dot" style="background:${color};box-shadow:0 0 8px ${color}"></div>`;
-                output += `<div class="arc-section">Sec ${a.section}</div>`;
-                output += `</div>`;
-                if (i < data.arc.length - 1) {
-                  output += `<div class="arc-line"></div>`;
-                }
-              });
-              output += `</div>`;
+              output += `<canvas id="arcChart" style="width:100%;max-width:450px;height:180px;margin:0 auto;display:block;"></canvas><br>`;
             }
 
             if (data.activities && data.activities.length) {
@@ -149,6 +149,46 @@
             }
 
             responseBox.innerHTML = output;
+
+            // Render emotional arc line chart
+            if (data.arc && data.arc.length) {
+              const arcCtx = document.getElementById('arcChart').getContext('2d');
+              const arcColors = data.arc.map(a => getMoodColor(a.mood));
+              new Chart(arcCtx, {
+                type: 'line',
+                data: {
+                  labels: data.arc.map(a => `Sec ${a.section}\n${a.mood}`),
+                  datasets: [{
+                    data: data.arc.map(a => getMoodValence(a.mood)),
+                    borderColor: '#05DF72',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(5, 223, 114, 0.1)',
+                    pointBackgroundColor: arcColors,
+                    pointBorderColor: arcColors,
+                    pointRadius: 8,
+                    pointHoverRadius: 10,
+                  }]
+                },
+                options: {
+                  scales: {
+                    y: {
+                      min: 0, max: 10,
+                      grid: { color: 'rgba(175,175,175,0.1)' },
+                      ticks: { color: 'rgb(175,175,175)', stepSize: 2,
+                        callback: v => ['', 'negative', '', '', '', 'neutral', '', '', '', '', 'positive'][v] || ''
+                      },
+                    },
+                    x: {
+                      grid: { color: 'rgba(175,175,175,0.1)' },
+                      ticks: { color: 'rgb(175,175,175)', font: { size: 11 } },
+                    }
+                  },
+                  plugins: { legend: { display: false } },
+                }
+              });
+            }
 
             // Render radar chart
             const ctx = document.getElementById('moodChart').getContext('2d');
