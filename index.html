@@ -104,7 +104,7 @@
             }
 
             // Radar chart canvas
-            output += `<canvas id="moodChart" width="300" height="300" style="max-width:350px;margin:0 auto;display:block;"></canvas><br>`;
+            output += `<canvas id="moodChart" style="width:100%;max-width:450px;height:350px;margin:0 auto;display:block;"></canvas><br>`;
 
             output += "<b>Top Moods:</b><br>";
             data.moods.forEach(m => {
@@ -116,10 +116,11 @@
               output += `<br><b>Emotional Arc:</b><br>`;
               output += `<div class="arc-container">`;
               data.arc.forEach((a, i) => {
+                const color = getMoodColor(a.mood);
                 output += `<div class="arc-point">`;
-                output += `<div class="arc-dot" style="background:${getMoodColor(a.mood)}"></div>`;
                 output += `<div class="arc-label">${a.mood}</div>`;
-                output += `<div class="arc-section">Section ${a.section}</div>`;
+                output += `<div class="arc-dot" style="background:${color};box-shadow:0 0 8px ${color}"></div>`;
+                output += `<div class="arc-section">Sec ${a.section}</div>`;
                 output += `</div>`;
                 if (i < data.arc.length - 1) {
                   output += `<div class="arc-line"></div>`;
