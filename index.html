@@ -166,6 +166,19 @@
 
             responseBox.innerHTML = output;
 
+            const copyBtn = document.getElementById("copyBtn");
+            copyBtn.style.display = "block";
+
+            copyBtn.onclick = () => {
+                const textToCopy = `COIL Mood Analysis for "${data.songTitle}": ${data.moods.map(m => m.mood).join(", ")}`;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    copyBtn.value = "Copied!"; // Visual feedback
+                    setTimeout(() => { copyBtn.value = "Copy Results"; }, 2000);
+           });
+        };
+            
+
+          
             // Render emotional arc line chart
             if (data.arc && data.arc.length) {
               const arcCtx = document.getElementById('arcChart').getContext('2d');
