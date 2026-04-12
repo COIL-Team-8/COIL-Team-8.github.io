@@ -53,7 +53,7 @@
         <div class="spinner"></div>
         <p style="color: var(--accentgreen); margin-top: 10px;">Analyzing musical emotions...</p>
       </div>
-      <p class="responseContent"></p>z
+      <p class="responseContent"></p>
       <button id="copyBtn" class="button" style="display: none; margin: 10px auto;">Copy Results</button>
       <script>
         function getMoodColor(mood) {
@@ -79,6 +79,23 @@
             sadness: 2, remorse: 2, anger: 2, disapproval: 2, fear: 2, grief: 1, disgust: 1,
           };
           return valence[mood] ?? 5;
+        }
+
+        function getMoodCombinationPhrase(moods) {
+            if (!moods || moods.length < 2) return "A focused emotional state.";
+            const m1 = moods[0].mood;
+            const m2 = moods[1].mood;
+            const combinations = {
+                "sadness+fear": "haunting melancholy",
+                "fear+sadness": "haunting melancholy",
+                "joy+excitement": "euphoric energy",
+                "excitement+joy": "euphoric energy",
+                "anger+disgust": "bitter resentment",
+                "optimism+joy": "radiant hope",
+                "neutral+confusion": "pensive uncertainty"
+            };
+            const key = `${m1}+${m2}`;
+            return combinations[key] || `${m1} blended with ${m2}`;
         }
 
         document.getElementById('moodForm').addEventListener('submit', async function(event) {
@@ -127,6 +144,11 @@
             // Build output
             let output = "";
 
+            if (data.moods && data.moods.length >= 2) {
+                const phrase = getMoodCombinationPhrase(data.moods);
+                output += `<h2 style="text-align: center; color: var(--accentgreen); text-transform: capitalize; margin-bottom: 20px;">"${phrase}"</h2>`;
+            }
+
             if (data.songTitle) {
               output += `<h3>${data.songTitle}</h3>`;
             }
@@ -172,13 +194,11 @@
             copyBtn.onclick = () => {
                 const textToCopy = `COIL Mood Analysis for "${data.songTitle}": ${data.moods.map(m => m.mood).join(", ")}`;
                 navigator.clipboard.writeText(textToCopy).then(() => {
-                    copyBtn.value = "Copied!"; // Visual feedback
-                    setTimeout(() => { copyBtn.value = "Copy Results"; }, 2000);
-           });
-        };
-            
+                    copyBtn.innerText = "Copied!"; 
+                    setTimeout(() => { copyBtn.innerText = "Copy Results"; }, 2000);
+                });
+            };
 
-          
             // Render emotional arc line chart
             if (data.arc && data.arc.length) {
               const arcCtx = document.getElementById('arcChart').getContext('2d');
@@ -274,8 +294,8 @@
       </p>
       <p>
         Music is closely tied to how people feel and what they are doing day to day, but most tools for discovering
-        music focus on genre rather than mood. This project aims to build a simple and fun tool that classifies a song's
-        emotional mood and suggests activities it pairs well with, like studying, working out, or relaxing. The scope
+        Music focuses on genre rather than mood. This project aims to build a simple and fun tool that classifies a song's
+        emotional mood and suggests activities that pair well with it, like studying, working out, or relaxing. The scope
         includes building the backend microservice, connecting it to a frontend, and deploying the full system to the
         cloud.
       </p>
