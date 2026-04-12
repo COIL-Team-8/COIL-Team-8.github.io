@@ -20,7 +20,7 @@
       <li>Wyatt Bier</li>
       <li>Thomas McGinley</li>
       <li>Ngô Quang Hải</li>
-      <li>Srujan Reddy</li>
+      <li>Srujan Reddy Bollampally</li>
     </ul>
   </div>
   <br />
@@ -48,6 +48,11 @@
     <div class="card response">
       <h2>Response Section</h2>
       <hr />
+
+      <div id="loading" style="display: none; text-align: center; padding: 20px;">
+        <div class="spinner"></div>
+        <p style="color: var(--accentgreen); margin-top: 10px;">Analyzing musical emotions...</p>
+      </div>
       <p class="responseContent"></p>
       <script>
         function getMoodColor(mood) {
@@ -84,7 +89,9 @@
           const lyrics = document.getElementById("lyrics").value.trim();
           const responseBox = document.querySelector(".responseContent");
 
-          responseBox.innerHTML = "Loading...";
+          const loader = document.getElementById("loading");
+          loader.style.display = "block";
+          responseBox.innerHTML = ""; 
 
           try {
             const res = await fetch("https://coil-team-8-microservice-bsfbd7b2bndbcvfg.westus3-01.azurewebsites.net/classify", {
@@ -97,6 +104,8 @@
 
             const data = await res.json();
 
+            loader.style.display = "none";
+
             // Handle errors or warnings
             if (data.error) {
               responseBox.innerHTML = `<b>Error:</b> ${data.error}`;
@@ -106,6 +115,12 @@
             if (data.warning) {
               responseBox.innerHTML = `<b>Warning:</b> ${data.warning}`;
               return;
+            }
+
+            if (data.moods && data.moods.length > 0) {
+              const primaryMood = data.moods[0].mood;
+              const themeColor = getMoodColor(primaryMood);
+              document.documentElement.style.setProperty('--accentgreen', themeColor);
             }
 
             // Build output
@@ -160,7 +175,7 @@
                   labels: data.arc.map(a => `Sec ${a.section}\n${a.mood}`),
                   datasets: [{
                     data: data.arc.map(a => getMoodValence(a.mood)),
-                    borderColor: '#05DF72',
+                    borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accentgreen').trim(),
                     borderWidth: 2,
                     tension: 0.4,
                     fill: true,
@@ -200,10 +215,10 @@
                   label: 'Mood Profile',
                   data: data.moods.map(m => m.confidence),
                   backgroundColor: 'rgba(5, 223, 114, 0.2)',
-                  borderColor: '#05DF72',
+                  borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accentgreen').trim(),
                   borderWidth: 2,
-                  pointBackgroundColor: '#05DF72',
-                  pointBorderColor: '#05DF72',
+                  pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--accentgreen').trim(),
+                  pointBorderColor: getComputedStyle(document.documentElement).getPropertyValue('--accentgreen').trim(),
                 }]
               },
               options: {
@@ -225,6 +240,7 @@
 
           } catch (err) {
             console.error(err);
+            document.getElementById("loading").style.display = "none";
             responseBox.innerHTML = "Failed to connect to the server.";
           }
         });  
