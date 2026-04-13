@@ -281,3 +281,30 @@ label {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+#userMood {
+    appearance: none;
+    display: block;
+    width: 83%;    
+    background-color: var(--glass);
+    backdrop-filter: blur(var(--bluramount));
+    border: var(--borderthickness) solid var(--lightest);
+    border-radius: 25px;
+    color: black;
+    padding: 10px;
+}
+
+#userMood:hover {
+    border-color: var(--accentgreen);
+    box-shadow: 0 0 5px 0px var(--accentgreen);
+}
+
+#userMood:valid {
+    color: white;
+}
+
+/* Optional option styling */
+#userMood option {
+    background-color: white;
+    color: black;
+}
