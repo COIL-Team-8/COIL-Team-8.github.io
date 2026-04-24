@@ -13,7 +13,7 @@
     --accentgreen: #05DF72;
     --accentblue: dodgerblue;
 
-    --bluramount: 3px;
+    --bluramount: 2px;
 
     --borderthickness: 1px;
 }
@@ -28,9 +28,48 @@
     }
 }
 
+@keyframes hueshift {
+    from {
+        filter: hue-rotate(0deg)
+    }
+
+    to {
+        filter: hue-rotate(360deg)
+    }
+}
+
 html {
     background-color: var(--deep);
     color: var(--lightest);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.indexNav {
+    width: 50%;
+    justify-self: center;
+}
+
+.indexNav a {
+    font-size: 25px;
+}
+
+nav {
+    color: var(--lightest);
+    display: flex;
+    justify-content: space-around;
+    gap: 40px;
+}
+
+nav a {
+    color: var(--lightest);
+    text-decoration: none;
+    font-size: 20px;
+    transition: .25s ease;
+}
+
+nav a:hover {
+    color: var(--accentgreen);
+    text-shadow: 0 0 10px var(--accentgreen);
 }
 
 body {
@@ -40,17 +79,26 @@ body {
     background-size: 40px 40px;
     animation: background-anim 60s linear infinite;
     margin: 0;
+    min-height: 100vh;
 }
 
 /* .section {
     animation: background-hueshift 10s linear infinite;
 } */
 
+.logo {
+    margin: 0;
+    position: fixed 100%;
+    text-align: center;
+    font-size: 25vw;
+    color: var(--accentgreen);
+    text-shadow: 0 0 25px var(--accentgreen);
+    animation: hueshift 5s linear infinite
+}
+
 h1 {
-    margin: 50px 10% 20px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: var(--lightest);
-    font-size: 50px;
+    color: var(--accentgreen);
+    text-shadow: 0 0 10px var(--accentgreen);
 }
 
 h2 {
@@ -69,6 +117,23 @@ hr {
     border: none;
 }
 
+header {
+    margin: 0;
+    padding: 0 40px;
+    box-shadow: 0 50px 50px 50px var(--deep);
+    background-color: var(--deep);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.pageTitle {
+    display: flex;
+    justify-content: space-around;
+    align-items: baseline;
+    gap: 20px;
+}
+
 .title {
     margin: 0;
     padding: 25px 0;
@@ -76,7 +141,6 @@ hr {
     /* border-bottom: var(--borderthickness) solid var(--lightest); */
     background-color: var(--deep);
     /* backdrop-filter: blur(var(--bluramount)); */
-    font-family: Verdana, Geneva, Tahoma, sans-serif
 }
 
 .title h1 {
@@ -117,7 +181,6 @@ hr {
 }
 
 .section {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
     display: flex;
     width: 90%;
     /* padding: 0 5%; */
@@ -160,6 +223,27 @@ hr {
 .responseContent {
     font-size: 16px;
     line-height: 1.6;
+}
+
+.bios {
+    display: inline-block;
+}
+
+.bios .card {
+    width: 50%;
+    margin: 0 10% 25px;
+    clear: both;
+    overflow: hidden;
+}
+
+.bios .card:nth-of-type(even) {
+    float: left;
+    clear: both;
+}
+
+.bios .card:nth-of-type(odd) {
+    float: right;
+    clear: both;
 }
 
 .card {
@@ -272,20 +356,25 @@ label {
     height: 40px;
     margin: 20px auto;
     border: 4px solid var(--glass);
-    border-top: 4px solid var(--accentgreen); 
+    border-top: 4px solid var(--accentgreen);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 #userMood {
     appearance: none;
     display: block;
-    width: 83%;    
+    width: 83%;
     background-color: var(--glass);
     backdrop-filter: blur(var(--bluramount));
     border: var(--borderthickness) solid var(--lightest);
@@ -307,4 +396,16 @@ label {
 #userMood option {
     background-color: white;
     color: black;
+}
+
+.biopic {
+    display: block;
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    padding-top: 15px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    overflow: hidden;
 }
