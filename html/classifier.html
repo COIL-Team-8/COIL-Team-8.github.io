@@ -191,6 +191,37 @@
                             output += `• ${m.mood} (${m.confidence}%)<br>`;
                         });
 
+                        output += "<br><b>Mood Matching:</b><br>";
+
+                        const userMood = document.getElementById("userMood").value;
+
+                        if (userMood) {
+                            let match = 0;
+
+                            // Exact mood found in top moods
+                            const foundMood = data.moods.find(m => m.mood === userMood);
+
+                            if (foundMood) {
+                                match = foundMood.confidence;
+                            } else {
+                                // If not exact match, compare emotional valence
+                                const songPrimary = data.moods[0].mood;
+
+                                const userValence = getMoodValence(userMood);
+                                const songValence = getMoodValence(songPrimary);
+
+                                const diff = Math.abs(userValence - songValence);
+
+                                match = Math.max(0, 100 - (diff * 15));
+                            }
+
+                            output += `• Your mood: <span style="text-transform:capitalize;">${userMood}</span><br>`;
+                            output += `• Song compatibility: <b>${Math.round(match)}%</b><br>`;
+                        }
+                        else {
+                            output += `• No mood selected.<br>`;
+                        }
+
                         // Emotional arc
                         if (data.arc && data.arc.length) {
                             output += `<br><b>Emotional Arc:</b><br>`;
