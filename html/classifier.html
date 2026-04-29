@@ -111,6 +111,38 @@
                     return valence[mood] ?? 5;
                 }
 
+                function calculateMoodCompatibility(userMood, moods) {
+                    if (!userMood || !moods || moods.length === 0) return null;
+
+                    const exactMood = moods.find(m => m.mood === userMood);
+                    if (exactMood) return exactMood.confidence;
+
+                    const userValence = getMoodValence(userMood);
+                    let weightedTotal = 0;
+                    let scoreTotal = 0;
+
+                    moods.forEach(m => {
+                        const confidence = Number(m.confidence) || 0;
+                        weightedTotal += getMoodValence(m.mood) * confidence;
+                        scoreTotal += confidence;
+                    });
+
+                    const songValence = scoreTotal > 0 ? weightedTotal / scoreTotal : getMoodValence(moods[0].mood);
+                    const distance = Math.abs(userValence - songValence);
+                    let match = 100 - (distance * 18);
+
+                    const userPositive = userValence >= 7;
+                    const userNegative = userValence <= 3;
+                    const songPositive = songValence >= 6.5;
+                    const songNegative = songValence <= 4;
+
+                    if ((userPositive && songNegative) || (userNegative && songPositive)) {
+                        match -= 15;
+                    }
+
+                    return Math.max(0, Math.min(100, Math.round(match)));
+                }
+
                 function getMoodCombinationPhrase(moods) {
                     if (!moods || moods.length < 2) return "A focused emotional state.";
                     const m1 = moods[0].mood;
@@ -196,27 +228,10 @@
                         const userMood = document.getElementById("userMood").value;
 
                         if (userMood) {
-                            let match = 0;
-
-                            // Exact mood found in top moods
-                            const foundMood = data.moods.find(m => m.mood === userMood);
-
-                            if (foundMood) {
-                                match = foundMood.confidence;
-                            } else {
-                                // If not exact match, compare emotional valence
-                                const songPrimary = data.moods[0].mood;
-
-                                const userValence = getMoodValence(userMood);
-                                const songValence = getMoodValence(songPrimary);
-
-                                const diff = Math.abs(userValence - songValence);
-
-                                match = Math.max(0, 100 - (diff * 15));
-                            }
+                            const match = calculateMoodCompatibility(userMood, data.moods);
 
                             output += `• Your mood: <span style="text-transform:capitalize;">${userMood}</span><br>`;
-                            output += `• Song compatibility: <b>${Math.round(match)}%</b><br>`;
+                            output += `• Song compatibility: <b>${match}%</b><br>`;
                         }
                         else {
                             output += `• No mood selected.<br>`;
