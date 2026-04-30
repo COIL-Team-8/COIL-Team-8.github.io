@@ -225,6 +225,13 @@ header {
     line-height: 1.6;
 }
 
+video {
+    width: 95%;
+    margin: 20px;
+    display: flex;
+    justify-self: center;
+}
+
 .bios {
     display: inline-block;
 }
